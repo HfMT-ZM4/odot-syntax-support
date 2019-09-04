@@ -1,0 +1,25 @@
+{
+    "name": "odot",
+    "displayName": "odot",
+    "description": "language support for odot expression language",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.37.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "odot",
+            "aliases": ["odot", "odot"],
+            "extensions": [".odot"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "odot",
+            "scopeName": "source.odot",
+            "path": "./syntaxes/odot.tmLanguage"
+        }]
+    }
+}

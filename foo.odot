@@ -1,0 +1,13 @@
+/foo = 1,
+/bar = quote( 
+    lambda([a], 
+        a("q")
+    )
+),
+
+/tes()
+
+/new./bob()
+
+#this is a comment
+

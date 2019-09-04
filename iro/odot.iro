@@ -1,0 +1,263 @@
+#################################################################
+## Iro
+################################################################ 
+##
+## * Press Ctrl + '+'/'-' To Zoom in
+## * Press Ctrl + S to save and recalculate... 
+## * Documents are saved to web storage.
+## * Only one save slot supported.
+## * Matches cannot span lines.
+## * Unicode chars must be defined in \u0000 to \uffff format.
+## * All matches must be contained by a single group ( ... )
+## * Look behinds not permitted, (?<= or (?<!
+## * Look forwards are permitted (?= or (?!
+## * Constants are defined as __my_const = (......)
+## * The \= format allows unescaped regular expressions
+## * Constants referenced by match \= $${__my_const}
+## * Constants can reference other constants
+## * You are free to delete all the default scopes.
+## * Twitter : ainslec , Web: http://eeyo.io/iro
+##
+################################################################
+
+name                   = odot
+file_extensions []     = odot;
+
+################################################################
+## Constants
+################################################################
+
+__TEMP_VARS \= (\b[a-zA-Z_][_a-zA-Z0-9]*\b(?!\s*\())
+
+__FUNCTIONS \= ((\b[a-zA-Z_][_a-zA-Z0-9]*\s*)+\()
+
+
+################################################################
+## Styles
+################################################################
+
+styles [] {
+
+.constLang : style {
+   color                 = purple
+   ace_scope             = constant.language
+   textmate_scope        = constant.language
+   pygments_scope        = Keyword.Constant
+}
+
+.comment : style {
+   color                 = light_green
+   italic                = true
+   ace_scope             = comment
+   textmate_scope        = comment
+   pygments_scope        = Comment
+}
+
+.keyword : style {
+   color                 = cyan
+   ace_scope             = keyword
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.function : style {
+   color                 = cyan
+   ace_scope             = function
+   textmate_scope        = entity.name.function
+   pygments_scope        = Name.Function
+}
+
+.tempVar : style {
+   color                 = cyan
+   ace_scope             = variable.parameter
+   textmate_scope        = variable.parameter
+   pygments_scope        = Name.Variable
+}
+
+.oscaddress : style {
+   color                 = pink
+   ace_scope             = variable
+   textmate_scope        = variable
+   pygments_scope        = Name.Variable
+}
+
+
+.numeric : style {
+   color                 = gold
+   ace_scope             = constant.numeric
+   textmate_scope        = constant.numeric
+   pygments_scope        = Number
+}
+
+.punctuation : style {
+   color                 = white
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.text : style {
+   color                 = brown
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.illegal : style {
+   color                 = white
+   background_color      = red
+   ace_scope             = invalid
+   textmate_scope        = invalid
+   pygments_scope        = Generic.Error
+}
+
+.operator : style {
+   color                 = orange
+   ace_scope             = keyword.operator
+   textmate_scope        = keyword.operator
+   pygments_scope        = Keyword.Type
+}
+
+}
+
+#################################################
+## Parse contexts
+#################################################
+
+contexts [] {
+
+##############################################
+## Main Context - Entry point context
+##############################################
+
+main : context {
+
+   : pattern {
+      regex \= (\btrue\b|\bfalse\b|\bnil\b)
+      styles []= .constLang;
+
+   }
+
+   : inline_push {
+      regex          \= (([\/a-zA-Z_][\/_a-zA-Z0-9]*\s*)+\()
+      styles []       = .function;
+      : pop {
+         regex       \= (\))
+         styles []    = .function;
+      }
+      : include "main" ;
+   }
+
+   : pattern {
+      regex          \= $${__TEMP_VARS}
+      styles []       = .tempVar;
+   }
+   
+   : inline_push {
+      regex          \= (\()
+      styles []       = .punctuation;
+      : pop {
+         regex       \= (\))
+         styles []    = .punctuation;
+      }
+      : include "main" ;
+   }
+   
+   : pattern {
+      regex          \= (/[a-zA-Z0-9_][_a-zA-Z0-9]*)
+      styles[]       = .oscaddress;
+   }
+   
+   
+   : include "numeric" ;
+   
+   : inline_push {
+      regex          \= (\{)
+      styles []       = .punctuation;
+      : pop {  
+         regex       \= (\})
+         styles []    = .punctuation;
+      }
+      : include "main" ;
+   }
+   
+   : inline_push {
+      regex          \= (\")
+      styles []       = .punctuation;
+      default_style   = .text
+      : pop {
+         regex       \= (\")
+         styles []    = .punctuation;
+      }
+   }
+   
+   
+   
+   : pattern {
+      regex          \= (\[|\]|=|\.|\+|\-|\*|\:)
+      styles []       = .operator;
+   }
+   
+   : pattern {
+      regex          \= (,)
+      styles []       = .punctuation;
+   }
+   
+   : include "multi_line_comment" ;
+
+: inline_push {
+      regex          \= (\#.*)
+      styles []       = .comment;
+      : eol_pop {}
+      : include "main" ;
+   }
+
+
+   : pattern {
+      regex          \= (//.*)
+      styles []       = .comment;
+   }
+   
+   : pattern {
+      regex          \= ([^\s])
+      styles []       = .illegal;
+   }
+   
+}
+
+#################################################
+## End of Contexts
+#################################################
+
+###########################################
+## Numeric Context
+###########################################
+
+numeric : context {
+   : pattern {
+      regex          \= (-?([0-9]+|[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?))
+      styles []       = .numeric;
+   }
+}
+
+###########################################
+## Multi Line Comment Context
+###########################################
+
+
+
+multi_line_comment : context {
+   description        = multiline
+   : inline_push {
+      regex          \= (/\*)
+      styles []       = .comment;
+      default_style   = .comment
+      : pop {
+         regex       \= (\*/)
+         styles []    = .comment;
+      }
+   }
+}
+
+   
+}

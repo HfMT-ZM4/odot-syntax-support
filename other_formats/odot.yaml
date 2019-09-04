@@ -1,0 +1,112 @@
+%YAML 1.2
+---
+name: odot
+scope: source.odot
+file_extensions: [ odot ]
+
+contexts:
+  main:
+    - match: '(([\/a-zA-Z_][\/_a-zA-Z0-9]*\s*)+\()'
+      captures:
+        0: comment.odot
+      push: 
+        - match: '(\))'
+          pop: true
+          captures:
+            0: comment.odot
+        - include: main
+        - match: '(.)'
+          captures:
+            0: text.odot
+    - match: '(\b[a-zA-Z_][_a-zA-Z0-9]*\b(?!\s*\())'
+      captures:
+        0: keyword.odot
+    - match: '(\()'
+      captures:
+        0: punctuation.odot
+      push: 
+        - match: '(\))'
+          pop: true
+          captures:
+            0: punctuation.odot
+        - include: main
+        - match: '(.)'
+          captures:
+            0: text.odot
+    - match: '(/[a-zA-Z0-9_][_a-zA-Z0-9]*)'
+      captures:
+        0: variable.odot
+    - include: numeric
+    - match: '(\{)'
+      captures:
+        0: punctuation.odot
+      push: 
+        - match: '(\})'
+          pop: true
+          captures:
+            0: punctuation.odot
+        - include: main
+        - match: '(.)'
+          captures:
+            0: text.odot
+    - match: '(\")'
+      captures:
+        0: punctuation.odot
+      push: 
+        - match: '(\")'
+          pop: true
+          captures:
+            0: punctuation.odot
+        - match: '(.)'
+          captures:
+            0: text.odot
+    - match: '(\[|\]|=|\.|\+|\-|\*|\:)'
+      captures:
+        0: keyword.operator.odot
+    - match: '(,)'
+      captures:
+        0: punctuation.odot
+    - include: multi_line_comment
+    - match: '(\#.*)'
+      captures:
+        0: comment.odot
+      push: 
+        - match: '(^(?=.{0,1})(?:|))'
+          pop: true
+          captures:
+            0: comment.odot
+        - include: main
+        - match: '(.)'
+          captures:
+            0: text.odot
+    - match: '(//.*)'
+      captures:
+        0: comment.odot
+    - match: '([^\s])'
+      captures:
+        0: invalid.odot
+    - match: '(.)'
+      captures:
+        0: text.odot
+  numeric:
+    - match: '(-?([0-9]+|[0-9]*\.[0-9]+([eE][-\x{002b}]?[0-9]+)?))'
+      captures:
+        0: constant.numeric.odot
+    - match: '(.)'
+      captures:
+        0: text.odot
+  multi_line_comment:
+    - match: '(/\*)'
+      captures:
+        0: comment.odot
+      push: 
+        - match: '(\*/)'
+          pop: true
+          captures:
+            0: comment.odot
+        - match: '(.)'
+          captures:
+            0: comment.odot
+    - match: '(.)'
+      captures:
+        0: text.odot
