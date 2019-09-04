@@ -6,21 +6,24 @@ file_extensions: [ odot ]
 
 contexts:
   main:
+    - match: '(\btrue\b|\bfalse\b|\bnil\b)'
+      captures:
+        0: constant.language.odot
     - match: '(([\/a-zA-Z_][\/_a-zA-Z0-9]*\s*)+\()'
       captures:
-        0: comment.odot
+        0: entity.name.function.odot
       push: 
         - match: '(\))'
           pop: true
           captures:
-            0: comment.odot
+            0: entity.name.function.odot
         - include: main
         - match: '(.)'
           captures:
             0: text.odot
     - match: '(\b[a-zA-Z_][_a-zA-Z0-9]*\b(?!\s*\())'
       captures:
-        0: keyword.odot
+        0: variable.parameter.odot
     - match: '(\()'
       captures:
         0: punctuation.odot
@@ -74,7 +77,7 @@ contexts:
         - match: '(^(?=.{0,1})(?:|))'
           pop: true
           captures:
-            0: comment.odot
+            0: constant.language.odot
         - include: main
         - match: '(.)'
           captures:

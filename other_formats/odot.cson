@@ -13,10 +13,14 @@
   'main' : {
     'patterns' : [
       {
+        'match' : '(\\btrue\\b|\\bfalse\\b|\\bnil\\b)'
+        'name' : 'constant.language.odot'
+      }
+      {
         'begin' : '(([\\/a-zA-Z_][\\/_a-zA-Z0-9]*\\s*)+\\()'
         'beginCaptures' : {
           '1' : {
-            'name' : 'comment.odot'
+            'name' : 'entity.name.function.odot'
           }
         }
         'patterns' : [
@@ -27,13 +31,13 @@
         'end' : '(\\))'
         'endCaptures' : {
           '1' : {
-            'name' : 'comment.odot'
+            'name' : 'entity.name.function.odot'
           }
         }
       }
       {
         'match' : '(\\b[a-zA-Z_][_a-zA-Z0-9]*\\b(?!\\s*\\())'
-        'name' : 'keyword.odot'
+        'name' : 'variable.parameter.odot'
       }
       {
         'begin' : '(\\()'
@@ -121,7 +125,7 @@
         'end' : '(^(?=.{0,1})(?:|))'
         'endCaptures' : {
           '1' : {
-            'name' : 'comment.odot'
+            'name' : 'constant.language.odot'
           }
         }
       }
