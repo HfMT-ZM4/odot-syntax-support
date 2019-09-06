@@ -1,0 +1,192 @@
+{
+  "version": "1",
+  "name": "odot",
+  "scopeName": "source.odot",
+  "fileTypes": [
+    "odot"
+  ],
+  "patterns": [
+    {
+      "include": "#value"
+    }
+  ],
+  "repository": {
+    "array": {
+      "begin": "\\[",
+      "beginCaptures": {
+          "0": {
+              "name": "punctuation.definition.array.begin.odot"
+          }
+      },
+      "end": "\\]",
+      "endCaptures": {
+          "0": {
+              "name": "punctuation.definition.array.end.odot"
+          }
+      },
+      "name": "meta.structure.array.odot",
+      "patterns": [
+          {
+              "include": "#value"
+          },
+          {
+              "match": ",",
+              "name": "punctuation.separator.array.odot"
+          },
+          {
+              "match": "[^\\s\\]]",
+              "name": "invalid.illegal.expected-array-separator.odot"
+          }
+      ]
+  },
+    "constant": {
+      "match": "(\\btrue\\b|\\bfalse\\b|\\bnil\\b)",
+      "name": "constant.language.odot"
+    },
+    "number": {
+      "match": "(-?([0-9]+|[0-9]*\\.[0-9]+([eE][-\\x{002b}]?[0-9]+)?))",
+      "name": "constant.numeric.odot"
+    },
+    "function": {
+      "begin": "(([\\/a-zA-Z_][\\/_a-zA-Z0-9]*\\s*)+\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.odot"
+        }
+      },
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "entity.name.function.odot"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#value"
+        }
+      ]
+    },
+    "localVariable": {
+      "match": "(\\b[a-zA-Z_][_a-zA-Z0-9]*\\b(?!\\s*\\())",
+      "name": "variable.parameter.odot"
+    },
+    "oscAddress": {
+      "match": "(/[a-zA-Z0-9_][_a-zA-Z0-9]*)",
+      "name": "variable.parameter.odot"
+    },
+    "string": {
+      "name": "string.quoted.double.odot",
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.string.begin.odot"
+        }
+      },
+      "contentName": "text.odot",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.string.end.odot"
+        }
+      }
+    },
+    "punctuation": {
+      "match": "(,|\\(|\\))",
+      "name": "punctuation.odot"
+    },
+    "operator": {
+      "match": "(\\[|\\]|=|\\.|\\+|\\-|\\*|\\:|\\!|\\&)",
+      "name": "keyword.operator.odot"
+    },
+    "comment": {
+      "match": "(\\#.*)",
+      "name": "comment.odot"
+    },
+    "object": {
+      "name": "meta.structure.dictionary.odot",
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.dictionary.begin.odot"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.dictionary.begin.odot"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#oscAddress"
+        },
+        {
+          "begin": ":",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.separator.dictionary.key-value.odot"
+            }
+          },
+          "end": "(,)|(?=\\})",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.separator.dictionary.pair.odot"
+            }
+          },
+          "name": "meta.structure.dictionary.value.odot",
+          "patterns": [
+            {
+              "comment": "the JSON object value",
+              "include": "#value"
+            },
+            {
+              "match": "[^\\s,]",
+              "name": "invalid.illegal.expected-dictionary-separator.odot"
+            }
+          ]
+        },
+        {
+          "match": "[^\\s\\}]",
+          "name": "invalid.illegal.expected-dictionary-separator.odot"
+        }
+      ]
+    }
+  },
+  "value": {
+    "patterns": [
+      { 
+        "include": "#array"
+      },
+      {
+        "include": "#constant"
+      },
+      {
+        "include": "#number"
+      },
+      {
+        "include": "#function"
+      },
+      {
+        "include": "#localVariable"
+      },
+      {
+        "include": "#oscAddress"
+      },
+      {
+        "include": "#string"
+      },
+      {
+        "include": "#punctuation"
+      },
+      {
+        "include": "#operator"
+      },
+      {
+        "include": "#comment"
+      },
+      {
+        "include": "#object"
+      }
+    ]
+  }
+}

@@ -1,13 +1,28 @@
-/foo = 1,
+/foo = true,
 /bar = quote( 
     lambda([a], 
         a("q")
     )
 ),
 
-/tes()
+/array = [ 1, 2, function(/ok), /foo 1, ],
 
-/new./bob()
+/foo = /array[[0]];
+
+
+/tes = "this() is a quoted text",
+/foo != /bar && true,
+
+/new./bob(),
+/steve = {
+    /foo : 1 / 2.000,
+    /bar : 2,
+},
+
+/test = function(foo)
+
+function = foo(),
 
 #this is a comment
 
+  "name": "meta.structure.array.odot",

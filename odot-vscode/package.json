@@ -19,7 +19,7 @@
         "grammars": [{
             "language": "odot",
             "scopeName": "source.odot",
-            "path": "./syntaxes/odot.tmLanguage"
+            "path": "./syntaxes/odot.tmLanguage.json"
         }]
     }
 }
